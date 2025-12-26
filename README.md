@@ -1,7 +1,7 @@
 
 # Strava Visualisation
 
-A tiny app I built to see my running data in ways Strava Premium won't show me for free cause I'm kinda broke right now.
+A tiny app I built to see my running data in ways Strava Premium won't show me for free.
 
 Strava Premium: ❌ Chick-fil-A: ✅✅✅
 
