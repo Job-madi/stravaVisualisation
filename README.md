@@ -1,29 +1,66 @@
-# StravaVisualisation
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.3.
+# Strava Visualisation
 
-## Development server
+A tiny app I built to see my running data in ways Strava Premium won't show me for free cause I'm kinda broke right now.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Strava Premium: ❌ Chick-fil-A: ✅✅✅
 
-## Code scaffolding
+All those Chick-fil-A meals I bought in the past week looking at me like…
+![Screenshot](https://a.pinatafarm.com/2000x1124/b177c50844/guy-confused.jpg)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Disclaimer: I just haven’t taken running seriously enough again to justify Premium… yet. I’ll be back soon.
 
-## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+## What it does
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- Syncs your Strava activities.
+- Shows habit patterns (when you actually run vs when you pretend you will).
+- Year in review stats.
+- Activity heatmap calendar Github commit style.
+- Heart rate zones.
 
-## Running end-to-end tests
+## Setup
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+1. Clone it
+2. Copy `src/enviroments/enviroment.example.ts` to `enviroment.ts`
+3. Fill in your Firebase config
+4. Create a Strava API app at [strava.com/settings/api](https://www.strava.com/settings/api)
+5. Add your secrets to `functions/.secret.local`:
 
-## Further help
+```env
+STRAVA_CLIENT_ID=your_id
+STRAVA_CLIENT_SECRET=your_secret
+STRAVA_REDIRECT_URI=http://127.0.0.1:5001/your-project/us-central1/stravaCallbackRedirect
+STRAVA_SCOPES=read,activity:read_all
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Run it
+
+```bash
+# Frontend
+npm install
+ng serve
+
+# Backend
+cd functions
+npm install
+firebase emulators:start 
+```
+
+## Stack
+
+* Angular
+* Firebase (Functions, Auth, Firestore)
+* Strava API
+
+---
+
+*Awaiting approval from Strava before I can host this for everyone.*
+
+*Powered by Strava* 🏃 *...it's in the game.*
+
+If you get the reference, drop it in the Issues. I’ll buy you a coffee after my fictitious startup IPO (any day now).
+
 
 

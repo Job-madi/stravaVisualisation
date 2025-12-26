@@ -7,7 +7,7 @@ import { StravaService } from '../../services/strava.service';
   standalone: true,
   imports: [],
   templateUrl: './auth-callback.component.html',
-  styleUrl: './auth-callback.component.scss'
+  styleUrl: './auth-callback.component.scss',
 })
 export class AuthCallbackComponent implements OnInit {
   private router = inject(Router);
@@ -17,7 +17,7 @@ export class AuthCallbackComponent implements OnInit {
   message = 'Connecting to Strava...';
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(async params => {
+    this.route.queryParams.subscribe(async (params) => {
       const state = params['state'];
       const error = params['error'];
 
