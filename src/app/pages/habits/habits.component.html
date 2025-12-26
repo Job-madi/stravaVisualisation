@@ -1,0 +1,80 @@
+<div class="habits-page">
+  <header class="header">
+    <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
+    <h1>Habit Patterns</h1>
+  </header>
+
+  <main class="main">
+    @if (loading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Analyzing your habits...</p>
+      </div>
+    } @else if (data()) {
+      <!-- Streak Stats -->
+      <section class="section streaks">
+        <div class="streak-card current">
+          <span class="streak-label">Current Streak</span>
+          <span class="streak-value">{{ data()!.currentStreak }}</span>
+          <span class="streak-unit">days</span>
+        </div>
+        <div class="streak-card longest">
+          <span class="streak-label">Longest Streak</span>
+          <span class="streak-value">{{ data()!.longestStreak }}</span>
+          <span class="streak-unit">days</span>
+        </div>
+      </section>
+
+      <!-- Day of Week Distribution -->
+      <section class="section">
+        <h2>Day of Week</h2>
+        <div class="day-chart">
+          @for (day of data()!.dayDistribution; track day.day) {
+            <div class="day-bar">
+              <div class="bar-fill" [style.height.%]="getBarHeight(day.count)"></div>
+              <span class="bar-label">{{ day.day.substring(0, 3) }}</span>
+              <span class="bar-count">{{ day.count }}</span>
+            </div>
+          }
+        </div>
+        <div class="insights">
+          <div class="insight">
+            <lucide-icon name="flame" [size]="20" color="#fc4c02"></lucide-icon>
+            <span>Most active on <strong>{{ data()!.mostActiveDay }}</strong></span>
+          </div>
+          <div class="insight">
+            <lucide-icon name="moon" [size]="20" color="#6366f1"></lucide-icon>
+            <span>Most likely to skip on <strong>{{ data()!.mostSkippedDay }}</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Time of Day -->
+      <section class="section">
+        <h2>Time of Day</h2>
+        <div class="time-grid">
+          <div class="time-card">
+            <lucide-icon name="sunrise" [size]="28" color="#fbbf24"></lucide-icon>
+            <span class="time-label">Morning</span>
+            <span class="time-count">{{ data()!.timeOfDay.morning }}</span>
+          </div>
+          <div class="time-card">
+            <lucide-icon name="sun" [size]="28" color="#fb923c"></lucide-icon>
+            <span class="time-label">Afternoon</span>
+            <span class="time-count">{{ data()!.timeOfDay.afternoon }}</span>
+          </div>
+          <div class="time-card">
+            <lucide-icon name="sunset" [size]="28" color="#f472b6"></lucide-icon>
+            <span class="time-label">Evening</span>
+            <span class="time-count">{{ data()!.timeOfDay.evening }}</span>
+          </div>
+          <div class="time-card">
+            <lucide-icon name="moon" [size]="28" color="#6366f1"></lucide-icon>
+            <span class="time-label">Night</span>
+            <span class="time-count">{{ data()!.timeOfDay.night }}</span>
+          </div>
+        </div>
+      </section>
+    }
+  </main>
+</div>

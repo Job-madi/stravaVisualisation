@@ -5,9 +5,11 @@ import { RouterOutlet } from '@angular/router';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  template: '<router-outlet />',
+  styles: [`
+    :host {
+      display: block;
+    }
+  `]
 })
-export class AppComponent {
-  title = 'stravaVisualisation';
-}
+export class AppComponent {}

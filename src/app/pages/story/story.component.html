@@ -1,0 +1,43 @@
+<div class="story-page">
+  <header class="header">
+    <a routerLink="/dashboard" class="back-link">← Back to Dashboard</a>
+    <h1>Your Year in Review</h1>
+  </header>
+
+  <main class="story-container">
+    @if (loading()) {
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Generating your story...</p>
+      </div>
+    } @else {
+      <div class="story-intro">
+        @if (profile()) {
+          <img [src]="profile()!.profile_image" [alt]="profile()!.firstname" class="intro-avatar">
+          <h2>{{ profile()!.firstname }}'s Running Journey</h2>
+        }
+        <p class="intro-subtitle">A look back at your achievements</p>
+      </div>
+
+      <div class="highlights-grid">
+        @for (highlight of highlights(); track highlight.title) {
+          <div class="highlight-card" [attr.data-type]="highlight.type">
+            <div class="highlight-icon">
+              @switch (highlight.type) {
+                @case ('total') { <lucide-icon name="activity" [size]="24" color="#fc4c02"></lucide-icon> }
+                @case ('record') { <lucide-icon name="trophy" [size]="24" color="#ffd700"></lucide-icon> }
+                @case ('consistency') { <lucide-icon name="flame" [size]="24" color="#ff6b35"></lucide-icon> }
+                @default { <lucide-icon name="star" [size]="24" color="#a855f7"></lucide-icon> }
+              }
+            </div>
+            <div class="highlight-content">
+              <span class="highlight-label">{{ highlight.title }}</span>
+              <span class="highlight-value">{{ highlight.value }}</span>
+              <span class="highlight-detail">{{ highlight.detail }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </main>
+</div>

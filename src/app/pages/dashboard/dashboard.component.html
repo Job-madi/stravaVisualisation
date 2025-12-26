@@ -1,0 +1,118 @@
+<div class="dashboard">
+  <header class="header">
+    <div class="header-left">
+      <h1>Strava Insights</h1>
+      <nav class="nav">
+        <a routerLink="/dashboard" class="nav-link active">Overview</a>
+        <a routerLink="/habits" class="nav-link">Habits</a>
+        <a routerLink="/story" class="nav-link">Year in Review</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      @if (profile()) {
+        <div class="user-info">
+          <img [src]="profile()!.profile_image" [alt]="profile()!.firstname" class="avatar">
+          <span>{{ profile()!.firstname }} {{ profile()!.lastname }}</span>
+        </div>
+      }
+      <button class="sync-btn" (click)="sync()" [disabled]="syncing()">
+        {{ syncing() ? 'Syncing...' : 'Sync' }}
+      </button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- Stats Overview -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total Activities</span>
+        <span class="stat-value">{{ activities().length }}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Distance</span>
+        <span class="stat-value">{{ totalDistance() | number:'1.0-0' }} km</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Time</span>
+        <span class="stat-value">{{ totalHours() | number:'1.0-0' }} hrs</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Elevation</span>
+        <span class="stat-value">{{ totalElevation() | number:'1.0-0' }} m</span>
+      </div>
+    </section>
+
+    <!-- Activity Calendar Heatmap -->
+    <section class="section">
+      <h2>Activity Calendar</h2>
+      <div class="calendar-heatmap">
+        @for (week of calendarWeeks(); track $index) {
+          <div class="calendar-week">
+            @for (day of week; track day.date) {
+              <div
+                class="calendar-day"
+                [class.has-activity]="day.count > 0"
+                [style.opacity]="day.count > 0 ? Math.min(0.3 + day.count * 0.2, 1) : 0.1"
+                [title]="day.date + ': ' + day.count + ' activities'">
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="calendar-legend">
+        <span>Less</span>
+        <div class="legend-boxes">
+          <div class="legend-box" style="opacity: 0.1"></div>
+          <div class="legend-box" style="opacity: 0.3"></div>
+          <div class="legend-box" style="opacity: 0.5"></div>
+          <div class="legend-box" style="opacity: 0.7"></div>
+          <div class="legend-box" style="opacity: 1"></div>
+        </div>
+        <span>More</span>
+      </div>
+    </section>
+
+    <!-- Recent Activities -->
+    <section class="section">
+      <h2>Recent Activities</h2>
+      <div class="activities-list">
+        @for (activity of activities().slice(0, 10); track activity.id) {
+          <div class="activity-card">
+            <div class="activity-type">{{ activity.sport_type || activity.type }}</div>
+            <div class="activity-main">
+              <h3>{{ activity.name }}</h3>
+              <span class="activity-date">{{ activity.start_date_local | date:'mediumDate' }}</span>
+            </div>
+            <div class="activity-stats">
+              <div class="activity-stat">
+                <span class="stat-num">{{ (activity.distance / 1000) | number:'1.1-1' }}</span>
+                <span class="stat-unit">km</span>
+              </div>
+              <div class="activity-stat">
+                <span class="stat-num">{{ formatTime(activity.moving_time) }}</span>
+                <span class="stat-unit">time</span>
+              </div>
+              @if (activity.average_heartrate) {
+                <div class="activity-stat">
+                  <span class="stat-num">{{ activity.average_heartrate | number:'1.0-0' }}</span>
+                  <span class="stat-unit">bpm</span>
+                </div>
+              }
+            </div>
+            <a
+              class="view-on-strava"
+              [href]="'https://www.strava.com/activities/' + activity.id"
+              target="_blank"
+              rel="noopener"
+            >View on Strava</a>
+          </div>
+        }
+      </div>
+    </section>
+
+    <footer class="powered-by">
+      <img src="powered_by_strava.svg" alt="Powered by Strava" />
+    </footer>
+  </main>
+</div>

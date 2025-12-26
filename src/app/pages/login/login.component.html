@@ -1,0 +1,35 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="currentColor" class="strava-icon">
+        <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066l-2.084 4.116z"/>
+        <path d="M10.298 13.828l2.549-5.035L15.387 4l-5.089 9.828h3.066l-3.066 5.172-2.549-5.172H4.687l5.611-9.828L7.749 0 0 13.828h10.298z" opacity=".6"/>
+      </svg>
+    </div>
+    <h1>Strava Insights</h1>
+    <p class="subtitle">Discover your training patterns and unlock personal insights from your running data</p>
+
+    <button class="strava-btn" (click)="login()">
+      <img
+        src="btn_strava_connect_orange.svg"
+        alt="Connect with Strava"
+        class="strava-connect-img"
+      />
+    </button>
+
+    <div class="features">
+      <div class="feature">
+        <span class="feature-icon">📊</span>
+        <span>Training analytics</span>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📅</span>
+        <span>Habit patterns</span>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">📖</span>
+        <span>Year in review</span>
+      </div>
+    </div>
+  </div>
+</div>
