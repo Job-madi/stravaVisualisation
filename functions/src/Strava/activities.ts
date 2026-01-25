@@ -18,16 +18,12 @@ export const syncActivities = functions.https.onCall(async (data, context) => {
     try {
       const accessToken = await getValidToken(userId);
 
-      // Fetch activities from last 12 months
-      const oneYearAgo = Math.floor(Date.now() / 1000) - 365 * 24 * 60 * 60;
-
       const allActivities: any[] = [];
       let page = 1;
 
       while (true) {
         const activities = await strava.athlete.listActivities({
           access_token: accessToken,
-          after: oneYearAgo,
           page,
           per_page: 100,
         });
