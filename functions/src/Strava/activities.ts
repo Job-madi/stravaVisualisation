@@ -1,28 +1,13 @@
 import { getFirestore } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
-import {
-  stravaClientId,
-  stravaClientSecret,
-  stravaRedirectUri,
-  stravaScopes,
-  configureStrava,
-} from '../utils/stringHelper';
+import { configureStrava } from '../utils/stringHelper';
 import strava from 'strava-v3';
 import { getValidToken } from './auth';
 import { logger } from 'firebase-functions';
 
 const db = getFirestore();
 
-export const syncActivities = functions
-  .runWith({
-    secrets: [
-      stravaClientId,
-      stravaClientSecret,
-      stravaRedirectUri,
-      stravaScopes,
-    ],
-  })
-  .https.onCall(async (data, context) => {
+export const syncActivities = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
       throw new functions.https.HttpsError('unauthenticated', 'Login required');
     }

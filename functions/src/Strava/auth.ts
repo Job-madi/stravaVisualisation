@@ -2,9 +2,6 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
 import * as functions from 'firebase-functions';
 import {
-  stravaClientId,
-  stravaClientSecret,
-  stravaRedirectUri,
   frontendUrl,
   configureStrava,
   stravaScopes,
@@ -17,44 +14,26 @@ const db = getFirestore();
 
 // initiate Strava OAuth - redirects to Strava authorization
 
-export const stravaAuth = functions
-  .runWith({
-    secrets: [
-      stravaClientId,
-      stravaClientSecret,
-      stravaRedirectUri,
-      stravaScopes,
-    ],
-  })
-  .https.onRequest(async (req, res) => {
-    configureStrava();
-    const state = req.query.state as string;
-    const authUrl = strava.oauth.getRequestAccessURL({
-      scope: stravaScopes.value(),
-      state,
-    });
-    res.redirect(await authUrl);
+export const stravaAuth = functions.https.onRequest(async (req, res) => {
+  configureStrava();
+  const state = req.query.state as string;
+  const authUrl = strava.oauth.getRequestAccessURL({
+    scope: stravaScopes,
+    state,
   });
+  res.redirect(await authUrl);
+});
 
 // callback handler for Strava OAuth, Strava redirects here, then we redirect to the frontend with state
 
-export const stravaCallbackRedirect = functions
-  .runWith({
-    secrets: [
-      stravaClientId,
-      stravaClientSecret,
-      stravaRedirectUri,
-      stravaScopes,
-    ],
-  })
-  .https.onRequest(async (req, res) => {
-    configureStrava();
+export const stravaCallbackRedirect = functions.https.onRequest(async (req, res) => {
+  configureStrava();
 
-    try {
-      const code = req.query.code as string;
-      const error = req.query.error as string;
-      const state = req.query.state as string;
-      const baseUrl = frontendUrl.value();
+  try {
+    const code = req.query.code as string;
+    const error = req.query.error as string;
+    const state = req.query.state as string;
+    const baseUrl = frontendUrl;
 
       if (error) {
         res.redirect(`${baseUrl}?error=${error}`);
@@ -79,23 +58,23 @@ export const stravaCallbackRedirect = functions
 
       const userId = athlete.id.toString();
 
-      const userData = {
-        id: userId,
-        firstname: athlete.firstname ?? null,
-        lastname: athlete.lastname ?? null,
-        username: athlete.username ?? null,
-        profile_image: (athlete.profile_medium || athlete.profile) ?? null,
-        city: athlete.city ?? null,
-        country: athlete.country ?? null,
-        strava: {
-          access_token: result.access_token ?? null,
-          refresh_token: result.refresh_token ?? null,
-          expires_at: result.expires_at ?? null,
-        },
-        updated_at: new Date(),
-      };
+        const userData = {
+          id: userId,
+          firstname: athlete.firstname ?? null,
+          lastname: athlete.lastname ?? null,
+          username: athlete.username ?? null,
+          profile_image: (athlete.profile_medium || athlete.profile) ?? null,
+          city: athlete.city ?? null,
+          country: athlete.country ?? null,
+          strava: {
+            access_token: result.access_token ?? null,
+            refresh_token: result.refresh_token ?? null,
+            expires_at: result.expires_at ?? null,
+          },
+          updated_at: new Date(),
+        };
 
-      await db.collection('users').doc(userId).set(userData, { merge: true });
+        await db.collection('users').doc(userId).set(userData, { merge: true });
 
       const customToken = await getAuth().createCustomToken(userId);
 
@@ -120,7 +99,7 @@ export const stravaCallbackRedirect = functions
 // Retrieve auth token by state
 
 export const getAuthToken = functions.https.onRequest(async (req, res) => {
-  setCorsHeaders(res, frontendUrl.value());
+  setCorsHeaders(res, frontendUrl);
 
   if (req.method === 'OPTIONS') {
     res.status(204).send('');
@@ -156,17 +135,8 @@ export const getAuthToken = functions.https.onRequest(async (req, res) => {
 
 // Handles Strava OAuth callback (called from frontend after redirect)
 
-export const stravaCallback = functions
-  .runWith({
-    secrets: [
-      stravaClientId,
-      stravaClientSecret,
-      stravaRedirectUri,
-      stravaScopes,
-    ],
-  })
-  .https.onCall(async (data, context) => {
-    configureStrava();
+export const stravaCallback = functions.https.onCall(async (data, context) => {
+  configureStrava();
 
     try {
       const code = data.code;
